@@ -5,10 +5,10 @@ KERNEL_LOCATION=/lib/modules/$(shell uname -r)
 BUILDDIR=$(KERNEL_LOCATION)/build
 
 all:
-	make -C $(BUILDDIR) M=$(PWD) modules
+	make -C $(BUILDDIR) M=$(shell pwd) modules
 
 install:
-	sudo make -C $(BUILDDIR) M=$(PWD) modules_install
+	sudo make -C $(BUILDDIR) M=$(shell pwd) modules_install
 	# Rebuild the kernel module dependencies for modprobe
 	sudo depmod -a
 
