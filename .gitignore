@@ -1,0 +1,10 @@
+*.o
+*.ko
+*.cmd
+*.symvers
+*.order
+*.mod
+*.mod.*
+client
+server
+*.dtbo
