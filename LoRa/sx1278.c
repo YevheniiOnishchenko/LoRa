@@ -1349,6 +1349,8 @@ static int
 sx1278_ieee_start(struct ieee802154_hw *hw)
 {
 	struct sx1278_phy *phy = hw->priv;
+	struct device_node *of_node = (regmap_get_device(phy->map))->of_node;
+	uint32_t default_tx_power;
 
 	dev_dbg(regmap_get_device(phy->map), "interface up\n");
 
@@ -1357,6 +1359,11 @@ sx1278_ieee_start(struct ieee802154_hw *hw)
 	sx127X_start_loramode(phy->map);
 	phy->opmode = sx127X_get_mode(phy->map);
 	add_timer(&phy->timer);
+
+	if(of_property_read_u32(of_node, "tx_power", &default_tx_power))
+		default_tx_power = sx1278_powers[12];
+
+	sx1278_ieee_set_txpower(hw, default_tx_power);
 
 	return 0;
 }
