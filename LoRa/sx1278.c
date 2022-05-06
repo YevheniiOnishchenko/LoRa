@@ -46,6 +46,19 @@
 #include <linux/regmap.h>
 #include <net/mac802154.h>
 
+
+#ifdef DEBUG 
+// A little hack to debug driver without kernel recompiling 
+// and overall system changing
+
+#ifdef dev_dbg
+#undef dev_dbg
+#endif
+
+#define dev_dbg(...) dev_info(__VA_ARGS__)
+#endif
+
+
 /*------------------------------ LoRa Functions ------------------------------*/
 
 #ifndef F_XOSC
