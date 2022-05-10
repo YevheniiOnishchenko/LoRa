@@ -23,3 +23,4 @@ ip link add link wpan${i} name lowpan${i} type lowpan
 ip link set wpan${i} up
 ip link set lowpan${i} up
 
+echo 0 | sudo tee /proc/sys/net/ipv6/conf/lowpan0/dad_transmits > /dev/null
