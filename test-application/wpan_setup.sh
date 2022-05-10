@@ -20,7 +20,15 @@ iwpan dev wpan${i} set pan_id $panid
 iwpan dev wpan${i} set short_addr ${short_addr}
 
 ip link add link wpan${i} name lowpan${i} type lowpan
+sysctl -w net.ipv6.conf.lowpan0.accept_dad=0
+sysctl -w net.ipv6.conf.lowpan0.dad_transmits=0
+sysctl -w net.ipv6.conf.lowpan0.accept_ra=0
+sysctl -w net.ipv6.conf.lowpan0.autoconf=0
+sysctl -w net.ipv6.conf.lowpan0.accept_ra_pinfo=0
+sysctl -w net.ipv6.conf.lowpan0.dad_transmits=0
+sysctl -w net.ipv6.conf.lowpan0.enhanced_dad=0
+
+sysctl -p
+
 ip link set wpan${i} up
 ip link set lowpan${i} up
-
-echo 0 | sudo tee /proc/sys/net/ipv6/conf/lowpan0/dad_transmits > /dev/null
