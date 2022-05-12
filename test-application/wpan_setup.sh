@@ -20,15 +20,25 @@ iwpan dev wpan${i} set pan_id $panid
 iwpan dev wpan${i} set short_addr ${short_addr}
 
 ip link add link wpan${i} name lowpan${i} type lowpan
-sysctl -w net.ipv6.conf.lowpan0.accept_dad=0
-sysctl -w net.ipv6.conf.lowpan0.dad_transmits=0
-sysctl -w net.ipv6.conf.lowpan0.accept_ra=0
-sysctl -w net.ipv6.conf.lowpan0.autoconf=0
-sysctl -w net.ipv6.conf.lowpan0.accept_ra_pinfo=0
-sysctl -w net.ipv6.conf.lowpan0.dad_transmits=0
-sysctl -w net.ipv6.conf.lowpan0.enhanced_dad=0
-
-sysctl -p
-
 ip link set wpan${i} up
 ip link set lowpan${i} up
+
+# Firewall stuff to discard icmp6 neighbor discovery
+# Delete all rules
+ip6tables -F
+
+# Block icmp6 neghbor messages
+#Forbid neighbor solicatation
+ip6tables -o lowpan0 -A OUTPUT -p icmpv6 --icmpv6-type 135 -j DROP
+#Forbid router solicatation
+ip6tables -o lowpan0 -A OUTPUT -p icmpv6 --icmpv6-type 133 -j DROP
+#Forbid neighbor advertisement
+ip6tables -o lowpan0 -A OUTPUT -p icmpv6 --icmpv6-type 136 -j DROP
+
+# Block mdns
+ip6tables -o lowpan0 -A OUTPUT -p udp --dport 5353 -j DROP
+
+# Accept everything else
+ip6tables -i lowpan0 -A INPUT -j ACCEPT
+ip6tables -i lowpan0 -A FORWARD -j ACCEPT
+ip6tables -o lowpan0 -A OUTPUT -j ACCEPT
