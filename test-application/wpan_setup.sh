@@ -28,6 +28,8 @@ ip link set lowpan${i} up
 ip6tables -F
 
 # Block icmp6 neghbor messages
+#Forbig multicast listener query
+ip6tables -o lowpan0 -A OUTPUT -p icmpv6 --icmpv6-type 130 -j DROP
 #Forbid neighbor solicatation
 ip6tables -o lowpan0 -A OUTPUT -p icmpv6 --icmpv6-type 135 -j DROP
 #Forbid router solicatation
